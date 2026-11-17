@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Férias · Distribuição</title>
+<style>
+:root{
+  --ink:#16213a; --ink2:#4d5872; --mute:#8a94a8; --line:#e2e6ee; --bg:#f4f5f8; --card:#fff;
+  --acc:#e8a33d; --mot:#2b6fd6; --aju:#0f9d76;
+  --red:#d6453d; --redbg:#fdecea; --warn:#b97b0c; --warnbg:#fff6e5; --ok:#0f9d76; --okbg:#e6f6f1;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg);font-size:15px;line-height:1.45}
+header.top{background:var(--ink);color:#fff;padding:22px 24px 24px}
+.wrap{max-width:1280px;margin:0 auto}
+.eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--acc);font-weight:700}
+h1{margin:4px 0 6px;font-size:26px;line-height:1.2}
+header.top p{margin:0;color:#c9d1e2;max-width:780px}
+main{max-width:1280px;margin:0 auto;padding:20px 24px 60px}
+.demo{background:var(--warnbg);border:1px solid #f1d49a;color:#7a5208;border-radius:10px;padding:10px 14px;margin-bottom:16px;font-size:13px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px}
+.form{max-width:620px;margin:0 auto}
+h2{font-size:16px;margin:0 0 2px}
+.muted{color:var(--ink2);font-size:13px}
+label{display:block;font-size:13px;font-weight:600;margin:14px 0 4px}
+label .opt{font-weight:400;color:var(--mute)}
+input,select,textarea{width:100%;font:inherit;padding:10px 11px;border:1px solid #cdd3de;border-radius:8px;background:#fff;color:var(--ink)}
+textarea{resize:vertical;min-height:60px}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--mot);outline-offset:-1px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:560px){.row2{grid-template-columns:1fr}}
+hr{border:0;border-top:1px solid var(--line);margin:20px 0}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;font:inherit;font-weight:600;border-radius:8px;border:1px solid transparent;padding:10px 16px;cursor:pointer;background:var(--ink);color:#fff}
+.btn:hover{filter:brightness(1.15)}
+.btn[disabled]{opacity:.4;cursor:not-allowed;filter:none}
+.btn.sec{background:#fff;color:var(--ink);border-color:#cdd3de}
+.btn.acc{background:var(--acc);color:#1d1606}
+.btn.full{width:100%}
+.lnk{background:none;border:0;color:var(--mot);font:inherit;font-size:13px;cursor:pointer;padding:0;text-decoration:underline}
+.anos{display:inline-flex;border:1px solid #cdd3de;border-radius:8px;overflow:hidden}
+.ano-b{font:inherit;font-weight:700;font-size:14px;border:0;background:#fff;color:var(--ink2);padding:9px 18px;cursor:pointer}
+.ano-b + .ano-b{border-left:1px solid #cdd3de}
+.ano-b.on{background:var(--ink);color:#fff}
+.opc{display:grid;grid-template-columns:44px 1fr;gap:10px;align-items:center;margin-top:10px}
+.opc .n{width:44px;height:44px;border-radius:10px;display:grid;place-items:center;font-weight:800;color:#fff;background:var(--ink)}
+.opc:nth-of-type(2) .n{background:#4d5872} .opc:nth-of-type(3) .n{background:#8a94a8}
+.msgs{margin-top:12px;display:grid;gap:6px}
+.msg{font-size:13px;border-radius:8px;padding:8px 10px}
+.msg.erro{background:var(--redbg);color:#9b2a23}
+.msg.aviso{background:var(--warnbg);color:#7a5208}
+.sucesso{max-width:620px;margin:10px auto}
+.selo{display:inline-block;background:var(--okbg);color:var(--ok);font-weight:700;border-radius:99px;padding:4px 12px;font-size:13px}
+.proto{font-size:28px;font-weight:800;margin:6px 0}
+.resumo{margin:14px 0;border-top:1px solid var(--line)}
+.resumo div{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
+.resumo span:first-child{color:var(--ink2)}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;opacity:0;transition:.2s;pointer-events:none;max-width:90vw;z-index:50}
+#toast.on{opacity:1;transform:translateX(-50%)}
+footer{text-align:center;color:var(--mute);font-size:12px;padding:10px 0 30px}
+
+/* gestor */
+.login{max-width:380px;margin:30px auto}
+.barra-g{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:16px}
+.barra-g > div{min-width:140px}
+.barra-g label{margin-top:0}
+.barra-g .grow{flex:1;min-width:180px}
+.ola{margin-left:auto;font-size:13px;color:var(--ink2);align-self:center}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.kpi small{color:var(--ink2);font-size:12px;display:block}
+.kpi b{font-size:26px}
+.kpi.alerta b{color:var(--red)}
+.sec-t{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin:22px 0 10px}
+.sec-t h2{font-size:17px}
+.capbox{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink2)}
+.capbox input{width:80px;padding:6px 8px}
+.plan{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.mes{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px;min-height:110px}
+.mes.cheio{border-color:var(--red);box-shadow:inset 0 0 0 1px var(--red)}
+.mes-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.mes-h b{font-size:15px}
+.mes-h span{font-size:12px;color:var(--ink2)}
+.mes.cheio .mes-h span{color:var(--red);font-weight:700}
+.chips{display:flex;flex-direction:column;gap:5px}
+.chip{display:flex;align-items:center;gap:6px;font-size:13px;line-height:1.25}
+.chip i{flex:none;width:8px;height:8px;border-radius:50%}
+.chip .nm{flex:1;min-width:0}
+.chip .tg{flex:none;font-size:10px;font-weight:700;border-radius:99px;padding:1px 6px;background:#eef1f6;color:var(--ink2)}
+.chip .tg.def{background:var(--okbg);color:var(--ok)}
+.chip .tg.o2{background:var(--warnbg);color:var(--warn)}
+.chip .tg.o3{background:#fde9e0;color:#a5481f}
+.vazio{font-size:12px;color:var(--mute)}
+.semvaga{margin-top:12px;background:var(--redbg);border-radius:12px;padding:12px;font-size:13px;color:#9b2a23}
+.legenda{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--ink2);margin-bottom:10px}
+.legenda i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px}
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:880px}
+th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--mute);padding:8px;border-bottom:1px solid #cfd5df}
+td{padding:8px;border-bottom:1px solid var(--line);vertical-align:top}
+td b{font-size:14px}
+td small{display:block;color:var(--ink2)}
+td select,td input{padding:6px 8px;font-size:13px}
+td input{margin-top:5px}
+.ops span{display:inline-block;margin-right:6px}
+.pl-ok{color:var(--ok);font-weight:600}.pl-sug{color:var(--ink);font-weight:600}.pl-sem{color:var(--red);font-weight:600}
+.fn{display:inline-block;font-size:10px;font-weight:700;color:#fff;border-radius:4px;padding:1px 5px;vertical-align:1px}
+.fn.M{background:var(--mot)} .fn.A{background:var(--aju)}
+
+/* modo matinal */
+.matinal-cab{display:none}
+body.matinal header.top, body.matinal .barra-g, body.matinal .kpis, body.matinal #sec-pedidos, body.matinal .so-gestor, body.matinal footer{display:none!important}
+body.matinal main{max-width:none;padding:18px 26px}
+body.matinal .matinal-cab{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:14px;border-bottom:3px solid var(--ink);padding-bottom:12px}
+body.matinal .matinal-cab h1{color:var(--ink);font-size:32px;margin:0}
+body.matinal .plan{grid-template-columns:repeat(4,1fr);gap:14px}
+body.matinal .mes{min-height:150px}
+body.matinal .mes-h b{font-size:19px}
+body.matinal .chip{font-size:15px}
+@media(max-width:900px){ body.matinal .plan{grid-template-columns:repeat(2,1fr)} }
+@media print{
+  body{background:#fff}
+  body.matinal .matinal-cab .btn{display:none}
+  .mes{break-inside:avoid}
+}
+.hide{display:none!important}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <div class="eyebrow" id="h-emp"></div>
+  <h1 id="h-tit"></h1>
+  <p id="h-sub"></p>
+</div></header>
+<main id="app"></main>
+<footer id="rodape"></footer>
+<div id="toast"></div>
+
+<script>
+/* ================================================================
+   CONFIGURAÇÃO
+   ================================================================ */
+const CONFIG = {
+  // URL do App da Web do Apps Script (a mesma do sistema de férias). Vazio = modo demonstração.
+  APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbwEjUHX5wPCt8ZhqJo4dsJTQNxMKVqP8eMTTpOVMK2MDUhE13AMpbgRLnTrRe5dFciwgQ/exec',
+  ANO: 2027,
+  ANOS: [2027, 2028],
+  EMPRESA: 'Revalle Agreste · Distribuição',
+  UNIDADES: ['Alagoinhas', 'Serrinha'],
+  FUNCOES: ['Motorista', 'Ajudante de entrega'],
+  USUARIOS: ['Natiele Coutinho', 'Raniere Lopes'],
+  PRAZO_TEXTO: '' // ex.: 'Envie até 15/12/2026.'
+};
+
+const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const STATUS = ['Pendente','Aprovado','Ajustar','Recusado'];
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const $ = s => document.querySelector(s);
+const sigla = f => f==='Motorista' ? 'M' : 'A';
+const cor = f => f==='Motorista' ? 'var(--mot)' : 'var(--aju)';
+const idPessoa = (n,u) => (String(n||'')+'|'+String(u||'')).normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/\s+/g,' ').trim();
+const hoje = new Date();
+const mesPassado = m => CONFIG.ANO < hoje.getFullYear() || (CONFIG.ANO === hoje.getFullYear() && m < hoje.getMonth()+1);
+let toastT;
+function toast(t){ const el=$('#toast'); el.textContent=t; el.classList.add('on'); clearTimeout(toastT); toastT=setTimeout(()=>el.classList.remove('on'),3800); }
+const sess = {
+  get(k){ try{ return sessionStorage.getItem(k); }catch(e){ return null; } },
+  set(k,v){ try{ sessionStorage.setItem(k,v); }catch(e){} },
+  del(k){ try{ sessionStorage.removeItem(k); }catch(e){} }
+};
+const seletorAno = id => `<div class="anos" id="${id}">${CONFIG.ANOS.map(a=>`<button type="button" class="ano-b${a===CONFIG.ANO?' on':''}" data-ano="${a}">${a}</button>`).join('')}</div>`;
+
+/* ================================================================
+   Comunicação (Apps Script ou demonstração)
+   ================================================================ */
+const DEMO = !CONFIG.APPS_SCRIPT_URL;
+const API = {
+  async get(params){
+    if (DEMO) return Demo.run(params);
+    const r = await fetch(CONFIG.APPS_SCRIPT_URL + '?' + new URLSearchParams(params));
+    return r.json();
+  },
+  async post(body){
+    if (DEMO) return Demo.run(body);
+    const r = await fetch(CONFIG.APPS_SCRIPT_URL, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify(body)});
+    return r.json();
+  }
+};
+// Modo demonstração: guarda no navegador. Qualquer usuário da lista entra com a senha "demo".
+const Demo = {
+  L(){ try{ return JSON.parse(localStorage.getItem('dist-demo')||'[]'); }catch(e){ return this._m||(this._m=[]); } },
+  S(L){ try{ localStorage.setItem('dist-demo', JSON.stringify(L)); }catch(e){ this._m=L; } },
+  async run(b){
+    const L = this.L();
+    const aut = () => CONFIG.USUARIOS.includes(b.usuario) && b.senha==='demo';
+    if (b.acao==='dist_procura'){ const p={}; L.filter(r=>String(r.ano)===String(b.ano)&&r.unidade===b.unidade&&r.funcao===b.funcao&&r.status!=='Recusado').forEach(r=>p[r.opcoes[0]]=(p[r.opcoes[0]]||0)+1); return {ok:true, primeira:p}; }
+    if (b.acao==='dist_listar'){ if(!aut()) return {ok:false, erro:'Usuário ou senha inválidos. No modo demonstração a senha é "demo".'}; return {ok:true, usuario:b.usuario, pedidos:L.filter(r=>String(r.ano)===String(b.ano))}; }
+    if (b.acao==='dist_enviar'){
+      const op=[b.op1,b.op2,b.op3].map(Number);
+      if (op.some(m=>!(m>=1&&m<=12)) || new Set(op).size<3) return {ok:false, erro:'Escolha três meses diferentes.'};
+      const agora = new Date().toLocaleString('pt-BR');
+      let x = L.find(r=>idPessoa(r.nome,r.unidade)===idPessoa(b.nome,b.unidade) && String(r.ano)===String(b.ano));
+      const atualizado = !!x;
+      if (!x){ x={protocolo:`DIS-${b.ano}-${String(L.length+1).padStart(4,'0')}`, enviadoEm:agora, ano:b.ano}; L.push(x); }
+      Object.assign(x,{atualizadoEm:agora, nome:b.nome, unidade:b.unidade, funcao:b.funcao, opcoes:op, obs:b.obs, status:'Pendente', mesDefinido:0, comentario:'', atualizadoPor:''});
+      this.S(L); return {ok:true, protocolo:x.protocolo, atualizado};
+    }
+    if (b.acao==='dist_atualizar'){
+      if(!aut()) return {ok:false, erro:'Sessão inválida.'};
+      const x=L.find(r=>r.protocolo===b.protocolo); if(!x) return {ok:false, erro:'Pedido não encontrado.'};
+      Object.assign(x,{status:b.status, mesDefinido:+b.mesDefinido||0, comentario:b.comentario||'', atualizadoPor:b.usuario}); this.S(L); return {ok:true};
+    }
+    return {ok:false, erro:'Ação desconhecida.'};
+  }
+};
+
+/* ================================================================
+   TELA DO COLABORADOR
+   ================================================================ */
+const C = { procura:{}, chave:'' };
+
+function telaColaborador(){
+  $('#h-tit').textContent = `Programação de Férias ${CONFIG.ANO}`;
+  $('#h-sub').textContent = `Escolha os três meses em que você prefere tirar férias, em ordem de preferência. A escala final é definida pela gestão. ${CONFIG.PRAZO_TEXTO}`;
+  const op = arr => arr.map(x=>`<option>${esc(x)}</option>`).join('');
+  $('#app').innerHTML = `
+  ${DEMO ? '<div class="demo"><b>Modo demonstração.</b> Os pedidos ficam só neste navegador.</div>' : ''}
+  <div class="card form">
+    <h2>Seus dados</h2>
+    <div class="muted">Se precisar mudar depois, é só enviar de novo com o mesmo nome completo, unidade e ano.</div>
+    <label>Ano das férias</label>
+    ${seletorAno('f-ano')}
+    <label for="f-nome">Nome completo</label>
+    <input id="f-nome" autocomplete="name" maxlength="120" placeholder="Como está no seu cadastro">
+    <div class="row2">
+      <div><label for="f-uni">Unidade</label><select id="f-uni"><option value="">Escolha</option>${op(CONFIG.UNIDADES)}</select></div>
+      <div><label for="f-fun">Função</label><select id="f-fun"><option value="">Escolha</option>${op(CONFIG.FUNCOES)}</select></div>
+    </div>
+    <hr>
+    <h2>Meses desejados</h2>
+    <div class="muted" id="dica-procura">Escolha a unidade e a função para ver quantos colegas já pediram cada mês.</div>
+    ${[1,2,3].map(i=>`<div class="opc"><div class="n">${i}ª</div><select id="f-op${i}"></select></div>`).join('')}
+    <div class="msgs" id="msgs"></div>
+    <label for="f-obs">Observação <span class="opt">(opcional)</span></label>
+    <textarea id="f-obs" maxlength="500" placeholder="Ex.: casamento em junho"></textarea>
+    <div style="margin-top:16px"><button class="btn full" id="b-enviar" disabled>Enviar pedido</button></div>
+  </div>`;
+  montarOpcoes();
+  $('#f-nome').addEventListener('input', validarForm);
+  [1,2,3].forEach(i=>$('#f-op'+i).addEventListener('change', ()=>{ montarOpcoes(); validarForm(); }));
+  ['#f-uni','#f-fun'].forEach(id=>$(id).addEventListener('change', carregarProcura));
+  $('#f-ano').addEventListener('click', e=>{
+    const b=e.target.closest('.ano-b'); if(!b || +b.dataset.ano===CONFIG.ANO) return;
+    CONFIG.ANO = +b.dataset.ano;
+    document.querySelectorAll('#f-ano .ano-b').forEach(x=>x.classList.toggle('on', +x.dataset.ano===CONFIG.ANO));
+    $('#h-tit').textContent = `Programação de Férias ${CONFIG.ANO}`;
+    [1,2,3].forEach(i=>$('#f-op'+i).value='');
+    C.chave=''; carregarProcura();
+  });
+  $('#b-enviar').onclick = enviar;
+  validarForm();
+}
+
+function montarOpcoes(){
+  const val = [1,2,3].map(i=>+($('#f-op'+i).value||0));
+  [1,2,3].forEach((i,k)=>{
+    const sel = $('#f-op'+i), atual = val[k];
+    const usados = val.filter((v,j)=>j!==k && v);
+    sel.innerHTML = `<option value="">${i}ª opção: escolha o mês</option>` + MESES.map((n,m)=>{
+      const mm=m+1, q=C.procura[mm]||0;
+      const dis = usados.includes(mm) || mesPassado(mm);
+      return `<option value="${mm}" ${mm===atual?'selected':''} ${dis?'disabled':''}>${n}${q?` · ${q>1?q+' colegas já pediram':'1 colega já pediu'}`:''}</option>`;
+    }).join('');
+  });
+}
+
+async function carregarProcura(){
+  const u=$('#f-uni').value, f=$('#f-fun').value, k=u+'|'+f+'|'+CONFIG.ANO;
+  if (!u || !f){ C.procura={}; C.chave=''; montarOpcoes(); validarForm(); return; }
+  if (k===C.chave) return;
+  C.chave=k;
+  try{
+    const r = await API.get({acao:'dist_procura', ano:CONFIG.ANO, unidade:u, funcao:f});
+    if (C.chave!==k) return;
+    C.procura = (r && r.ok && r.primeira) || {};
+    $('#dica-procura').textContent = 'Ao lado de cada mês aparece quantos colegas da sua unidade e função já escolheram esse mês como 1ª opção.';
+  }catch(e){ C.procura={}; }
+  montarOpcoes(); validarForm();
+}
+
+function validarForm(){
+  const falta=[];
+  if (!$('#f-nome').value.trim()) falta.push('nome completo');
+  if (!$('#f-uni').value) falta.push('unidade');
+  if (!$('#f-fun').value) falta.push('função');
+  [1,2,3].forEach(i=>{ if(!$('#f-op'+i).value) falta.push(`${i}ª opção`); });
+  const nome = $('#f-nome').value.trim();
+  const av = [];
+  if (nome && nome.split(/\s+/).length<2) av.push('Escreva o nome completo (nome e sobrenome). É por ele que o pedido é identificado.');
+  const cheio = [1,2,3].map(i=>+$('#f-op'+i).value).filter(m=>m && (C.procura[m]||0)>=3);
+  if (cheio.length) av.push(`Muitos colegas já pediram ${cheio.map(m=>MESES[m-1]).join(', ')}. Por isso, a 2ª e a 3ª opção são importantes.`);
+  $('#msgs').innerHTML = av.map(t=>`<div class="msg aviso">${esc(t)}</div>`).join('')
+    + (falta.length && falta.length<7 ? `<div class="msg aviso">Falta preencher: ${falta.join(', ')}.</div>` : '');
+  $('#b-enviar').disabled = falta.length>0;
+}
+
+async function enviar(){
+  const b=$('#b-enviar');
+  const d = { acao:'dist_enviar', ano:CONFIG.ANO, nome:$('#f-nome').value.trim().replace(/\s+/g,' '),
+    unidade:$('#f-uni').value, funcao:$('#f-fun').value, op1:+$('#f-op1').value, op2:+$('#f-op2').value, op3:+$('#f-op3').value, obs:$('#f-obs').value.trim() };
+  b.disabled=true; b.textContent='Enviando...';
+  try{
+    const r = await API.post(d);
+    if (!r || !r.ok) throw new Error((r&&r.erro)||'Não foi possível enviar.');
+    window.scrollTo(0,0);
+    $('#app').innerHTML = `<div class="card sucesso">
+      <span class="selo">${r.atualizado?'Pedido atualizado':'Pedido enviado'}</span>
+      <div class="proto">${esc(r.protocolo)}</div>
+      <div class="muted">Guarde este número. ${r.atualizado?'Seu pedido anterior foi substituído e voltou para análise.':'Seu pedido vai para análise da gestão.'}</div>
+      <div class="resumo">
+        <div><span>Nome</span><b>${esc(d.nome)}</b></div>
+        <div><span>Ano</span><b>${d.ano}</b></div>
+        <div><span>Unidade · Função</span><b>${esc(d.unidade)} · ${esc(d.funcao)}</b></div>
+        <div><span>1ª opção</span><b>${MESES[d.op1-1]}</b></div>
+        <div><span>2ª opção</span><b>${MESES[d.op2-1]}</b></div>
+        <div><span>3ª opção</span><b>${MESES[d.op3-1]}</b></div>
+      </div>
+      <button class="btn sec" onclick="location.reload()">Fazer outro pedido</button>
+    </div>`;
+  }catch(e){
+    toast(e.message && e.message!=='Failed to fetch' ? e.message : 'Sem conexão com o servidor. Tente de novo em instantes.');
+    b.disabled=false; b.textContent='Enviar pedido';
+  }
+}
+
+/* ================================================================
+   PAINEL DA GESTÃO  (link com #gestor no final)
+   ================================================================ */
+const G = { usuario:'', senha:'', pedidos:[], f:{unidade:'',funcao:'',status:'',busca:''}, cap:0 };
+
+function telaGestor(){
+  $('#h-tit').textContent = `Férias ${CONFIG.ANO} · Painel da gestão`;
+  $('#h-sub').textContent = 'Opções de mês da equipe, prévia do planejamento e aprovação.';
+  const u = sess.get('dist-u'), s = sess.get('dist-s');
+  if (u && s){ G.usuario=u; G.senha=s; carregar(); return; }
+  $('#app').innerHTML = `<div class="card login">
+    <h2>Entrar</h2><div class="muted">Acesso da gestão da Distribuição.${DEMO?' No modo demonstração, a senha é <b>demo</b>.':''}</div>
+    <label for="g-u">Usuário</label><select id="g-u">${CONFIG.USUARIOS.map(x=>`<option>${esc(x)}</option>`).join('')}</select>
+    <label for="g-s">Senha</label><input id="g-s" type="password" autocomplete="current-password">
+    <div style="margin-top:14px"><button class="btn full" id="g-entrar">Entrar</button></div>
+    <div style="margin-top:12px;text-align:center"><a class="lnk" href="#">Voltar para o formulário</a></div>
+  </div>`;
+  const go = ()=>{ G.usuario=$('#g-u').value; G.senha=$('#g-s').value; if(G.senha) carregar(true); };
+  $('#g-entrar').onclick = go;
+  $('#g-s').addEventListener('keydown', e=>{ if(e.key==='Enter') go(); });
+  $('#g-s').focus();
+}
+
+async function carregar(primeiro){
+  if (!primeiro && !$('#g-plan')) $('#app').innerHTML = '<div class="card login muted">Carregando...</div>';
+  try{
+    const r = await API.post({acao:'dist_listar', ano:CONFIG.ANO, usuario:G.usuario, senha:G.senha});
+    if (!r || !r.ok){ sess.del('dist-u'); sess.del('dist-s'); toast((r&&r.erro)||'Usuário ou senha inválidos.'); if(!$('#g-s')) telaGestor(); return; }
+    sess.set('dist-u', G.usuario); sess.set('dist-s', G.senha);
+    G.pedidos = (r.pedidos||[]).map(p=>({...p, opcoes:(p.opcoes||[]).map(Number), mesDefinido:+p.mesDefinido||0}));
+    painel();
+  }catch(e){ toast('Sem conexão com o servidor.'); if(!$('#g-plan') && !$('#g-s')) telaGestor(); }
+}
+
+function filtrados(){
+  const f=G.f, b=f.busca.toLowerCase();
+  return G.pedidos.filter(p=>(!f.unidade||p.unidade===f.unidade)&&(!f.funcao||p.funcao===f.funcao)&&(!f.status||p.status===f.status)
+    &&(!b||(p.nome+' '+p.protocolo).toLowerCase().includes(b)))
+    .sort((x,y)=>(x.unidade+x.funcao+x.nome).localeCompare(y.unidade+y.funcao+y.nome,'pt-BR'));
+}
+
+/* Planejamento sugerido, por unidade + função:
+   1) quem tem "Mês definido" fica nele;
+   2) os demais, na ordem de envio, entram na 1ª opção; se o mês estiver cheio, na 2ª; depois na 3ª;
+   3) quem não coube em nenhuma das três fica em "Sem vaga nas opções".
+   Limite por mês: o valor digitado, ou automático = pessoas do grupo ÷ 12 (arredondado para cima). */
+function planejar(L){
+  const grupos = {};
+  L.filter(p=>p.status!=='Recusado').forEach(p=>(grupos[p.unidade+'|'+p.funcao] ||= []).push(p));
+  const limites = {};
+  Object.entries(grupos).forEach(([k,ps])=>{
+    const cap = G.cap>0 ? G.cap : Math.max(1, Math.ceil(ps.length/12));
+    limites[k]=cap;
+    const occ = Array(13).fill(0);
+    ps.forEach(p=>{ p._plan=null; if(p.mesDefinido){ p._plan={mes:p.mesDefinido, tipo:'def'}; occ[p.mesDefinido]++; } });
+    const resto = ps.filter(p=>!p._plan).sort((a,b)=>a.protocolo.localeCompare(b.protocolo));
+    for (let r=0;r<3;r++) resto.forEach(p=>{ if(p._plan) return; const m=p.opcoes[r]; if(m && occ[m]<cap){ p._plan={mes:m, tipo:'o'+(r+1)}; occ[m]++; } });
+    resto.forEach(p=>{ if(!p._plan) p._plan={mes:0, tipo:'sem'}; });
+  });
+  L.filter(p=>p.status==='Recusado').forEach(p=>p._plan={mes:0, tipo:'rec'});
+  return limites;
+}
+
+function painel(){
+  const op = (arr,sel) => '<option value="">Todas</option>'+arr.map(x=>`<option ${x===sel?'selected':''}>${esc(x)}</option>`).join('');
+  const st = (arr,sel) => '<option value="">Todos</option>'+arr.map(x=>`<option ${x===sel?'selected':''}>${esc(x)}</option>`).join('');
+  $('#app').innerHTML = `
+    ${DEMO ? '<div class="demo"><b>Modo demonstração.</b> Mostrando só os pedidos feitos neste navegador.</div>' : ''}
+    <div class="barra-g">
+      <div style="min-width:0"><label>Ano</label>${seletorAno('g-ano')}</div>
+      <div><label>Unidade</label><select id="g-uni">${op(CONFIG.UNIDADES,G.f.unidade)}</select></div>
+      <div><label>Função</label><select id="g-fun">${op(CONFIG.FUNCOES,G.f.funcao)}</select></div>
+      <div><label>Status</label><select id="g-st">${st(STATUS,G.f.status)}</select></div>
+      <div class="grow"><label>Buscar</label><input id="g-busca" placeholder="Nome ou protocolo" value="${esc(G.f.busca)}"></div>
+      <button class="btn acc" id="g-mat">Modo matinal</button>
+      <button class="btn sec" id="g-atu">Atualizar</button>
+      <button class="btn sec" id="g-csv">Exportar CSV</button>
+      <button class="btn sec" id="g-sair">Sair</button>
+    </div>
+    <div class="kpis" id="g-kpis"></div>
+    <div class="matinal-cab">
+      <div><div class="eyebrow" style="color:var(--warn)">${esc(CONFIG.EMPRESA)}</div><h1 id="mt-tit"></h1><div class="muted" id="mt-sub"></div></div>
+      <div style="display:flex;gap:8px"><button class="btn sec" onclick="window.print()">Imprimir</button><button class="btn" id="mt-sair">Sair do modo matinal</button></div>
+    </div>
+    <div class="sec-t so-gestor"><h2>Prévia do planejamento</h2>
+      <div class="capbox">Máximo por mês (por unidade e função): <input id="g-cap" type="number" min="1" max="99" placeholder="auto" value="${G.cap||''}"> <span id="g-capinfo"></span></div>
+    </div>
+    <div class="legenda">
+      <span><i style="background:var(--mot)"></i>Motorista</span><span><i style="background:var(--aju)"></i>Ajudante de entrega</span>
+      <span><span class="tg def" style="font-size:10px;font-weight:700;border-radius:99px;padding:1px 6px;background:var(--okbg);color:var(--ok)">definido</span> mês já definido pela gestão</span>
+      <span><span style="font-size:10px;font-weight:700;border-radius:99px;padding:1px 6px;background:#eef1f6">1ª</span> <span style="font-size:10px;font-weight:700;border-radius:99px;padding:1px 6px;background:var(--warnbg);color:var(--warn)">2ª</span> <span style="font-size:10px;font-weight:700;border-radius:99px;padding:1px 6px;background:#fde9e0;color:#a5481f">3ª</span> opção do colaborador usada na sugestão</span>
+    </div>
+    <div class="plan" id="g-plan"></div>
+    <div id="g-semvaga"></div>
+    <div id="sec-pedidos">
+      <div class="sec-t"><h2>Pedidos</h2><span class="muted">"Mês definido" fixa a pessoa no mês. Em "Automático", vale a sugestão da prévia.</span></div>
+      <div class="card scroll" style="padding:6px 10px"><table><thead><tr>
+        <th>Colaborador</th><th>Opções</th><th>Prévia</th><th>Mês definido</th><th>Status · comentário</th>
+      </tr></thead><tbody id="g-lista"></tbody></table></div>
+    </div>`;
+  $('#g-ano').addEventListener('click', e=>{
+    const b=e.target.closest('.ano-b'); if(!b || +b.dataset.ano===CONFIG.ANO) return;
+    CONFIG.ANO=+b.dataset.ano; $('#h-tit').textContent=`Férias ${CONFIG.ANO} · Painel da gestão`; carregar();
+  });
+  $('#g-uni').onchange=e=>{G.f.unidade=e.target.value; render();};
+  $('#g-fun').onchange=e=>{G.f.funcao=e.target.value; render();};
+  $('#g-st').onchange=e=>{G.f.status=e.target.value; render();};
+  $('#g-busca').oninput=e=>{G.f.busca=e.target.value; render();};
+  $('#g-cap').oninput=e=>{G.cap=Math.max(0,parseInt(e.target.value)||0); render();};
+  $('#g-atu').onclick=()=>carregar();
+  $('#g-csv').onclick=exportarCSV;
+  $('#g-sair').onclick=()=>{ sess.del('dist-u'); sess.del('dist-s'); G.senha=''; document.body.classList.remove('matinal'); telaGestor(); };
+  $('#g-mat').onclick=()=>{ document.body.classList.add('matinal'); render(); window.scrollTo(0,0); };
+  $('#mt-sair').onclick=()=>{ document.body.classList.remove('matinal'); render(); };
+  render();
+}
+
+const tagPlan = p => p._plan.tipo==='def' ? '<span class="tg def">definido</span>'
+  : p._plan.tipo==='o1' ? '<span class="tg">1ª</span>' : p._plan.tipo==='o2' ? '<span class="tg o2">2ª</span>' : p._plan.tipo==='o3' ? '<span class="tg o3">3ª</span>' : '';
+
+function render(){
+  // o planejamento considera todos os status do grupo (exceto recusados), mesmo com filtro de status/busca
+  const base = G.pedidos.filter(p=>(!G.f.unidade||p.unidade===G.f.unidade)&&(!G.f.funcao||p.funcao===G.f.funcao));
+  const limites = planejar(base);
+  const L = filtrados();
+  const ativos = base.filter(p=>p.status!=='Recusado');
+  const sem = ativos.filter(p=>p._plan.tipo==='sem');
+  const cnt = s => L.filter(p=>p.status===s).length;
+  $('#g-kpis').innerHTML = `
+    <div class="kpi"><small>Pedidos</small><b>${L.length}</b></div>
+    <div class="kpi"><small>Pendentes</small><b>${cnt('Pendente')}</b></div>
+    <div class="kpi"><small>Aprovados</small><b>${cnt('Aprovado')}</b></div>
+    <div class="kpi"><small>Na 1ª opção (prévia)</small><b>${ativos.filter(p=>p._plan.tipo==='o1'||(p._plan.tipo==='def'&&p.mesDefinido===p.opcoes[0])).length}</b></div>
+    <div class="kpi ${sem.length?'alerta':''}"><small>Sem vaga nas 3 opções</small><b>${sem.length}</b></div>`;
+  const ks = Object.keys(limites);
+  $('#g-capinfo').textContent = G.cap ? '' : (ks.length ? 'automático: ' + ks.map(k=>`${k.replace('|',' · ')} ${limites[k]}`).join(' | ') : '');
+
+  const filtroTxt = [G.f.unidade||'Todas as unidades', G.f.funcao||'Motoristas e ajudantes'].join(' · ');
+  $('#mt-tit').textContent = `Planejamento de Férias ${CONFIG.ANO}`;
+  $('#mt-sub').textContent = `${filtroTxt} · prévia sujeita a aprovação · ${new Date().toLocaleDateString('pt-BR')}`;
+
+  const mostraUni = !G.f.unidade;
+  $('#g-plan').innerHTML = MESES.map((n,i)=>{
+    const m=i+1, ps = ativos.filter(p=>p._plan.mes===m).sort((a,b)=>(a.funcao+a.nome).localeCompare(b.funcao+b.nome,'pt-BR'));
+    const porGrupo = {}; ps.forEach(p=>{ const k=p.unidade+'|'+p.funcao; porGrupo[k]=(porGrupo[k]||0)+1; });
+    const cheio = Object.entries(porGrupo).some(([k,q])=>q>limites[k]);
+    return `<div class="mes${cheio?' cheio':''}"><div class="mes-h"><b>${n}</b><span>${ps.length} pessoa${ps.length===1?'':'s'}${cheio?' · acima do limite':''}</span></div>
+      <div class="chips">${ps.length ? ps.map(p=>`<div class="chip"><i style="background:${cor(p.funcao)}"></i><span class="nm">${esc(p.nome)}${mostraUni?` <span class="muted">· ${esc(p.unidade)}</span>`:''}</span>${tagPlan(p)}</div>`).join('') : '<div class="vazio">Ninguém</div>'}</div></div>`;
+  }).join('');
+  $('#g-semvaga').innerHTML = sem.length ? `<div class="semvaga"><b>Sem vaga nas 3 opções (${sem.length}):</b> ${sem.map(p=>`${esc(p.nome)} (${esc(p.unidade)} · ${sigla(p.funcao)})`).join(', ')}. Defina o mês na lista de pedidos ou aumente o máximo por mês.</div>` : '';
+
+  $('#g-lista').innerHTML = L.length ? L.map(p=>{
+    const pl = p._plan.tipo==='def' ? `<span class="pl-ok">${MESES[p._plan.mes-1]}</span><small>definido</small>`
+      : p._plan.tipo==='sem' ? `<span class="pl-sem">Sem vaga</span><small>nenhuma das 3 opções</small>`
+      : p._plan.tipo==='rec' ? `<span class="muted">Recusado</span>`
+      : `<span class="pl-sug">${MESES[p._plan.mes-1]}</span><small>sugestão · ${p._plan.tipo[1]}ª opção</small>`;
+    return `<tr>
+      <td><b>${esc(p.nome)}</b><small>${esc(p.unidade)} · <span class="fn ${sigla(p.funcao)}">${sigla(p.funcao)}</span> ${esc(p.funcao)}</small><small>${esc(p.protocolo)} · ${esc(p.enviadoEm)}</small>${p.obs?`<small><i>“${esc(p.obs)}”</i></small>`:''}</td>
+      <td class="ops">${p.opcoes.map((m,i)=>`<span><b>${i+1}ª</b> ${m?MESES[m-1]:'-'}</span>`).join('<br>')}</td>
+      <td>${pl}</td>
+      <td><select data-def="${esc(p.protocolo)}"><option value="0">Automático</option>${MESES.map((n,i)=>`<option value="${i+1}" ${p.mesDefinido===i+1?'selected':''}>${n}</option>`).join('')}</select></td>
+      <td><select data-st="${esc(p.protocolo)}">${STATUS.map(s=>`<option ${s===p.status?'selected':''}>${s}</option>`).join('')}</select>
+        <input data-com="${esc(p.protocolo)}" placeholder="Comentário" value="${esc(p.comentario)}">
+        ${p.atualizadoPor?`<small>por ${esc(p.atualizadoPor)}</small>`:''}</td>
+    </tr>`;
+  }).join('') : '<tr><td colspan="5" class="muted">Nenhum pedido com esse filtro.</td></tr>';
+
+  document.querySelectorAll('[data-def]').forEach(s=>s.onchange=()=>salvar(s.dataset.def,{mesDefinido:+s.value}));
+  document.querySelectorAll('[data-st]').forEach(s=>s.onchange=()=>salvar(s.dataset.st,{status:s.value}));
+  document.querySelectorAll('[data-com]').forEach(i=>{ i.onchange=()=>salvar(i.dataset.com,{comentario:i.value.trim()}); i.onkeydown=e=>{ if(e.key==='Enter') i.blur(); }; });
+}
+
+async function salvar(protocolo, mud){
+  const p = G.pedidos.find(x=>x.protocolo===protocolo); if(!p) return;
+  const novo = {status: mud.status ?? p.status, mesDefinido: mud.mesDefinido ?? p.mesDefinido, comentario: mud.comentario ?? p.comentario ?? ''};
+  try{
+    const r = await API.post({acao:'dist_atualizar', usuario:G.usuario, senha:G.senha, protocolo, ...novo});
+    if (!r || !r.ok) throw new Error((r&&r.erro)||'Não foi possível salvar.');
+    Object.assign(p, novo, {atualizadoPor:G.usuario}); render();
+    toast(`Salvo: ${p.nome}`);
+  }catch(e){ toast(e.message); render(); }
+}
+
+function exportarCSV(){
+  const cab=['Protocolo','Nome','Unidade','Função','1ª opção','2ª opção','3ª opção','Mês na prévia','Como entrou','Mês definido','Status','Comentário','Observação','Enviado em','Atualizado por'];
+  const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
+  const como = p => ({def:'Definido pela gestão',o1:'1ª opção',o2:'2ª opção',o3:'3ª opção',sem:'Sem vaga',rec:'Recusado'})[p._plan?.tipo]||'';
+  const linhas=[cab.map(q).join(';')];
+  filtrados().forEach(p=>linhas.push([p.protocolo,p.nome,p.unidade,p.funcao,...p.opcoes.map(m=>m?MESES[m-1]:''),p._plan?.mes?MESES[p._plan.mes-1]:'',como(p),
+    p.mesDefinido?MESES[p.mesDefinido-1]:'',p.status,p.comentario,p.obs,p.enviadoEm,p.atualizadoPor].map(q).join(';')));
+  const blob=new Blob(['﻿'+linhas.join('\r\n')],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`ferias-distribuicao-${CONFIG.ANO}.csv`; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+}
+
+/* ================================================================
+   Roteamento: #gestor abre o painel da gestão
+   ================================================================ */
+function rota(){
+  document.body.classList.remove('matinal');
+  $('#h-emp').textContent = CONFIG.EMPRESA;
+  const gestor = location.hash.toLowerCase()==='#gestor';
+  $('#rodape').innerHTML = gestor ? esc(CONFIG.EMPRESA) : `${esc(CONFIG.EMPRESA)} · Dúvidas? Fale com seu supervisor · <a class="lnk" href="#gestor">Gestão</a>`;
+  gestor ? telaGestor() : telaColaborador();
+}
+window.addEventListener('hashchange', rota);
+document.addEventListener('keydown', e=>{ if(e.key==='Escape' && document.body.classList.contains('matinal')){ document.body.classList.remove('matinal'); render(); } });
+rota();
+</script>
+</body>
+</html>
